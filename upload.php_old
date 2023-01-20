@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>アップロードページ</title>
+</head>
+<body>
+<h2>アップロード</h2>
+場所：<?php echo $_POST['dirpath']; ?>
+<br>
+<form enctype="multipart/form-data" method="post" onsubmit="return checkForm();">
+    <input type="hidden" name="MAX_FILE_SIZE" value="1000000">
+    <?php print("<input type=\"hidden\" name=\"dirpath\" value=\"" . $_POST['dirpath'] .  "\">"); ?>
+    <br>
+    <input type="file" name="upload_file[]" multiple="multiple">
+    <div id="upfile_list">
+    </div>
+    <br>
+    <br>
+    <input type="submit" name="_upload" value="アップロード">
+</form>
+<br>
+<br>
+<?php
+//[アップロード]ボタンの押下確認
+if (isset($_POST['_upload'])) {
+
+    for ($i = 0; $i < count($_FILES['upload_file']['name']); $i++) {
+	//ファイルをテンポラリから保存場所へ移動
+	    $filename = $_POST['dirpath'] ."/".  $_FILES['upload_file']['name'][$i];
+        $tmp_name = $_FILES['upload_file']['tmp_name'][$i];
+	    if (move_uploaded_file($_FILES['upload_file']['tmp_name'][$i], $filename)) {
+		    echo $_FILES['upload_file']['name'][$i] . 'をアップロードしました<br>';
+	    } else {
+		    echo '【Err】' . $_FILES['upload_file']['name'][$i] . 'をアップロード出来ません！<br>';
+	    }
+    }
+}
+?>
+<script>
+function checkForm()
+{
+	if (document.getElementsByName('file')[0].value == '') {
+		alert('ファイルを選択してください');
+		return false;
+	}
+	return true;
+}
+</script>
+<?php
+//function checkForm()
+//{
+//	if (count($_FILES['upload_file']['name']) == 0) {
+//        $alert = "<script type='text/javascript'>alert('ファイルを選択してください!');</script>";
+//        echo $alert;
+//		return false;
+//    }
+//    else
+//    {
+//        //アップロードファイルの表示
+//        print("<br>");
+//        print("<br>");
+//        print("<table border=\"1\">");
+//        print("<th>No</th>");
+//        print("<th>ファイル名</th>");
+//        for ($i = 0; $i < count($_FILES['upload_file']['name']); $i++) {
+//            print("<tr>\n");
+//            print("<td>" . $i ."</td>\n");
+//            print("<td>" . $_FILES['upload_file']['name'][$i] ."</td>\n");
+//            print("</tr>\n");
+//        }    
+//    }
+//	return true;
+//}
+//checkForm();
+?>
+
+</body>
+</html>
